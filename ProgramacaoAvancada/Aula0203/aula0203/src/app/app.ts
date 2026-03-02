@@ -1,12 +1,19 @@
 import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, FormsModule, MatIconModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('aula0203');
+  tituloProjeto: String = "Formulário";
+  valorDigitado: String = "";
+
+  limparInput(){
+    this.valorDigitado = "";
+  }
 }
