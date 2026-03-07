@@ -56,10 +56,10 @@ int main(){
 	
 	bubbleSort(A, n); **/
 	
-	int n = 10;
+	int n = 5;
 	int* A = criarArranjoSemRepetir(n);
 	imprimir(A, n, 0);
-	quickSort(A, 0, n);
+	mergeSort(A, 0, n-1);
 	imprimir(A, n, 0);
 	
 	
@@ -101,7 +101,7 @@ int* criarArranjoSemRepetir(int n){
 		exit(1);
 	}
 	srand(time(NULL));
-	//rand() % (n*2)
+
 	for (int i = 0; i < n; i++){
 		arranjo[i] = i + 1;
 	}
@@ -161,33 +161,32 @@ void bubbleSort(int A[], int n){
 
 void mergeSort(int A[], int p, int r){
 	if (p < r) {
-		int q = (p + r) / 2;
-		mergeSort(A, p, q);
-		mergeSort(A, q+1, r);
-		merge(A, p, q, r);
+		int q = (p + r) / 2; //pega o meio do array
+		mergeSort(A, p, q); //quebra a parte da ESQUERDA
+		mergeSort(A, q+1, r); //quebra a parte da DIREITA
+		merge(A, p, q, r); //junto tudo ordenando
 	}
 }
 
 void merge(int A[], int p, int q, int r){
-	int n1 = q - p + 1;
-	int n2 = r - q;
+	int n1 = q - p + 1; //tamanho da parte da ESQUERDA
+	int n2 = r - q; //tamanho da parte da DIREITA
 	
-	int* L = (int*) malloc(n1*sizeof(int));
-	int* R = (int*) malloc(n2*sizeof(int));
+	int* L = (int*) malloc(n1*sizeof(int)); //cria vetor auxiliar pra ESQUERDA
+	int* R = (int*) malloc(n2*sizeof(int)); //cria vetor auxiliar pra DIREITA
 	
-	for(int i = 0; i < n1; i++) L[i] = A[p+i-1];
-	for(int i = 0; i < n2; i++) R[i] = A[q+i];
+	for(int i = 0; i < n1; i++) L[i] = A[p+i]; //passa os valores da ESQUERDA para o L
+	for(int i = 0; i < n2; i++) R[i] = A[q+i+1]; //passa os valores da DIREITA para o R
 	
-	int i = 0, j = 0;
+	int i = 0; //indice para ESQUERDA
+	int j = 0; //indice para DIREITA
 	
-	for(int k = p; k < r; k++){
-		//se i > n1
-		//se j > n2
-		if((i < n1) && ((j >= n2) || (L[k] <= R[k]))){
-			A[k] = L[i];
+	for(int k = p; k <= r; k++){
+		if((i < n1) && ((j >= n2) || (L[i] <= R[j]))){ //se o lado ESQUERDO ainda tem elemento e o lado DIREITO já acabou ou o ESQUERDO é menor que o DIREITO
+			A[k] = L[i]; //pega o lado ESQUERDO
 			i++;
 		} else{
-			A[k] = R[j];
+			A[k] = R[j]; //senão pega o lado DIREITO
 			j++;
 		}
 	}
@@ -195,22 +194,23 @@ void merge(int A[], int p, int q, int r){
 }
 
 int partition(int A[], int p, int r){
-	int x = A[r];
-	int i = p - 1;
-	for(int j = p; j < r-1; j++){
+	int x = A[r]; //PIVÔ recebe o último elemento do Array
+	int i = p - 1; //o i inicia um elemento atrás do início
+	
+	for(int j = p; j < r; j++){
 		if(A[j] <= x){
 			i++;
 			troca(&A[i], &A[j]);
 		}
 	}
-	troca(&A[i+1], &A[r]);
-	return i+1;
+	troca(&A[i+1], &A[r]); //coloca o pivô na posição correta
+	return i+1; //retorna a posição correta do pivô
 }
 
 void quickSort(int A[], int p, int r){
 	if(p < r){
-		int pivo = partition(A, p, r);
-		quickSort(A, p, pivo-1);
-		quickSort(A, pivo+1, r);
+		int pivo = partition(A, p, r); //pega a posição correta do pivô
+		quickSort(A, p, pivo-1); //Esquerda (menores)
+		quickSort(A, pivo+1, r); //Direita (maiores)
 	}
 }
